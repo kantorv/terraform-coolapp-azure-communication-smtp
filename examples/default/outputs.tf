@@ -25,3 +25,9 @@ output "sender_usernames" {
    value = module.azure-communication-smtp.sender_usernames
 }
 
+
+
+
+output "custom_domain_id" {
+ value = module.azure-communication-smtp.custom_domain_resource_id
+}

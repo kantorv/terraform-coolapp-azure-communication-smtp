@@ -28,3 +28,8 @@ output "sender_usernames" {
    value = [for s in jsondecode(data.azapi_resource_list.sender_usernames.output).value: format("%s<%s@%s>",s.properties.displayName, s.properties.username,"${var.custom_domain}") ]
 }
 
+
+output "custom_domain_resource_id" {
+  value = data.azapi_resource.custom_domain.id
+}
+
