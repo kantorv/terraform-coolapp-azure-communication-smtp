@@ -56,3 +56,14 @@ variable "dns_verification_fail_silently" {
   type = bool
   default = false
 }
+
+variable "dns_verification_max_retries" {
+  type = number
+  default = 10
+}
+
+variable "dns_verification_retry_timeout" {
+  description = "timeout in seconds"
+  type = number
+  default = 30
+}

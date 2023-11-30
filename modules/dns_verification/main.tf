@@ -56,9 +56,9 @@ resource "null_resource" "dns_verification_status" {
       # Azure Portal notification:  
       # Custom domain(s) pending verification. This process can take up to 15-20 mins to complete.
       # Please click Refresh to see the latest status of your domain.
-      
-      max_retries=20
-      retry_interval=60
+
+      max_retries=${var.dns_verification_max_retries}
+      retry_interval=${var.dns_verification_retry_timeout}
 
       # Implement a for loop to wait for the API to become available
       i=0

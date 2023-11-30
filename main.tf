@@ -69,6 +69,8 @@ module "domain_verification" {
   wait_for_success_verification = var.dns_wait_for_success_verification
   az_cli_enabled = var.az_cli_enabled
   dns_verification_fail_silently = var.dns_verification_fail_silently
+  dns_verification_max_retries = var.dns_verification_max_retries
+  dns_verification_retry_timeout = var.dns_verification_retry_timeout
 }
 
 
@@ -86,9 +88,7 @@ module "dmarc_record" {
   ttl             = 3600
   record_type = "DMARC"
   initiate_verification = false
-  wait_for_success_verification = var.dns_wait_for_success_verification
-  dns_verification_fail_silently = var.dns_verification_fail_silently
-  
+  wait_for_success_verification = false
 }
 
 
@@ -109,6 +109,8 @@ module "spf_dkim_dkim2_verification" {
   wait_for_success_verification = var.dns_wait_for_success_verification
   az_cli_enabled = var.az_cli_enabled
   dns_verification_fail_silently = var.dns_verification_fail_silently
+  dns_verification_max_retries = var.dns_verification_max_retries
+  dns_verification_retry_timeout = var.dns_verification_retry_timeout
 }
 
 
