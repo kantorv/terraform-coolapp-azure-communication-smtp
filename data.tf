@@ -11,7 +11,7 @@ data "azapi_resource" "custom_domain" {
   name      = var.custom_domain
   parent_id = azurerm_email_communication_service.example.id
   response_export_values = ["properties.verificationRecords"]
-depends_on = [ azurerm_email_communication_service.example, azapi_resource.custom_domain ]
+  depends_on = [ azapi_update_resource.linked_domain ]
 }
 
 

@@ -56,11 +56,6 @@ variable "smtp_server_port" {
   type = number
 }
 
-variable "smtp_test_email_resipient" {
-  type = string
-  default = ""
-}
-
 
 
 variable "setup_dmarc_record" {

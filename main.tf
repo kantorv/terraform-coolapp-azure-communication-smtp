@@ -185,30 +185,3 @@ resource "azapi_resource" "sender_usernames" {
 
 }
 
-
-
-
-
-resource "null_resource" "send_email" {
-  count = length(var.smtp_test_email_resipient) > 0 ? 1 : 0
-
-
-  triggers = {
-    always_run = filemd5("${path.module}/scripts/send_email.py")
-  }
-
-
-  provisioner "local-exec" {
-    command = <<-EOF
-        python3 ${path.module}/scripts/send_email.py \
-            -s ${var.smtp_server_host} \
-            -f ${local.sender_usernames[0]}  \
-            -r ${var.smtp_server_port} \
-            -u '${data.azurerm_communication_service.smtp_app.name}|${module.entra_app.client_id}|${module.entra_app.tenant_id}' \
-            -p '${module.entra_app.client_secret}' \
-            -t ${var.smtp_test_email_resipient}
-    EOF
-  }
-
-  depends_on = [azapi_resource.sender_usernames, module.spf_dkim_dkim2_verification]
-}
