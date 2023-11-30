@@ -1,8 +1,6 @@
-import email, smtplib, ssl
 import argparse
+import smtplib
 
-from email import encoders
-from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -33,7 +31,14 @@ def main(smtp_username,smtp_password,smtp_host,smtp_port,from_address,to_address
 
    # Add body to email
    message.attach(MIMEText(body, "plain"))
-   message_body =message.as_string().format( recipient=to_address, sender=from_address, now=datetime.datetime.now(),smtp_port=smtp_port, smtp_username=smtp_username, smtp_host=smtp_host)
+   message_body = message.as_string().format( 
+      recipient=to_address, 
+      sender=from_address, 
+      now=datetime.datetime.now(),
+      smtp_port=smtp_port, 
+      smtp_username=smtp_username, 
+      smtp_host=smtp_host
+   )
 
 
    with smtplib.SMTP(smtp_host, smtp_port) as server:
