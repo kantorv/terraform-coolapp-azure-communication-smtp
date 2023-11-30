@@ -77,3 +77,9 @@ variable "az_cli_enabled" {
   type = bool
   default = false
 }
+
+
+variable "entra_app_display_name" {
+  type = string
+  default = "smtp_app"
+}

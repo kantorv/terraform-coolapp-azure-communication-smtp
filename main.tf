@@ -124,7 +124,7 @@ resource "azurerm_communication_service" "example" {
 module "entra_app" {
   source = "./modules/entra_app"
   scope = azurerm_communication_service.example.id
-  display_name = "smtp_app"
+  display_name = var.entra_app_display_name
   depends_on = [ azurerm_communication_service.example ]
 }
 
