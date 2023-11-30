@@ -19,7 +19,21 @@ module "azure-communication-smtp" {
   smtp_server_host = "smtp.azurecomm.net"
   smtp_server_port = 587
   smtp_test_email_resipient = var.smtp_test_email_resipient
-  sender_usernames = ["info","support","hr","llama"]
+  sender_usernames =  [
+    {
+        "username" : "info",
+        "display_name": "Office Team"
+    },
+    {
+        "username" : "llama",
+        "display_name": "Email Bot"
+    },
+    {
+        "username" : "d",
+        "display_name": "DMARC REPORTS"
+    }
+
+  ]
   verification_records_keys = [ "DKIM", "DKIM2", "Domain", "SPF" ]
 
   dmarc_value = var.dmarc_value
