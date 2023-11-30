@@ -47,14 +47,6 @@ variable "sender_usernames" {
 
 
 
-variable "smtp_server_host" {
-  type = string
-
-}
-
-variable "smtp_server_port" {
-  type = number
-}
 
 variable "smtp_test_email_resipient" {
   type = string
