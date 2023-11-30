@@ -32,6 +32,7 @@ resource "azapi_resource_action" "initiate_verification" {
 
 
 
+
 resource "null_resource" "dns_verification_status" {
   # count = var.wait_for_success_verification?1:0
   # Define any dependencies or triggers that determine when this resource should run
@@ -52,9 +53,12 @@ resource "null_resource" "dns_verification_status" {
           exit 0 
       fi
 
-  
+      # Azure Portal notification:  
+      # Custom domain(s) pending verification. This process can take up to 15-20 mins to complete.
+      # Please click Refresh to see the latest status of your domain.
+      
       max_retries=20
-      retry_interval=30
+      retry_interval=60
 
       # Implement a for loop to wait for the API to become available
       i=0

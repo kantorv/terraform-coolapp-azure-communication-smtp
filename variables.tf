@@ -83,3 +83,15 @@ variable "entra_app_display_name" {
   type = string
   default = "smtp_app"
 }
+
+variable "dns_verification_fail_silently" {
+  type = bool
+  default = false
+
+}
+
+variable "dns_wait_for_success_verification" {
+  type = bool
+  default = true
+
+}

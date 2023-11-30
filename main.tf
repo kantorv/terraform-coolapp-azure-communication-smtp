@@ -29,8 +29,6 @@ resource "azurerm_email_communication_service" "example" {
 
 
 
-
-
 resource "azapi_resource" "custom_domain" {
 
   type      = "Microsoft.Communication/emailServices/domains@2023-04-01-preview"
@@ -68,13 +66,14 @@ module "domain_verification" {
   record_type = "Domain"
   initiate_verification = true
 
-  wait_for_success_verification = true
-  az_cli_enabled = true
+  wait_for_success_verification = var.dns_wait_for_success_verification
+  az_cli_enabled = var.az_cli_enabled
+  dns_verification_fail_silently = var.dns_verification_fail_silently
 }
 
 
 module "dmarc_record" {
-  depends_on = [azapi_resource.custom_domain]
+  depends_on = [azapi_resource.custom_domain, module.domain_verification]
  #   depends_on = [cloudflare_record.verification]
   count = var.setup_dmarc_record?1:0
 
@@ -87,7 +86,8 @@ module "dmarc_record" {
   ttl             = 3600
   record_type = "DMARC"
   initiate_verification = false
-  wait_for_success_verification = false
+  wait_for_success_verification = var.dns_wait_for_success_verification
+  dns_verification_fail_silently = var.dns_verification_fail_silently
   
 }
 
@@ -106,9 +106,9 @@ module "spf_dkim_dkim2_verification" {
   ttl             = each.value.ttl
   record_type = each.key
   initiate_verification = true
-  wait_for_success_verification = true
-  az_cli_enabled = true
-  
+  wait_for_success_verification = var.dns_wait_for_success_verification
+  az_cli_enabled = var.az_cli_enabled
+  dns_verification_fail_silently = var.dns_verification_fail_silently
 }
 
 
