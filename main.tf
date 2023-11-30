@@ -22,7 +22,7 @@ resource "azurerm_resource_group" "default" {
 resource "azurerm_email_communication_service" "example" {
   name                = "smtpproj-emailcommunicationservice"
   resource_group_name = azurerm_resource_group.default.name
-  data_location       = "United States"
+  data_location       = var.communication_service_data_location
 }
 
 
@@ -35,10 +35,7 @@ resource "azapi_resource" "custom_domain" {
   name      = var.custom_domain
   location  = "global"
   parent_id = azurerm_email_communication_service.example.id
-  #   tags = {
-  #     tagName1 = "tagValue1"
-  #     tagName2 = "tagValue2"
-  #   }
+
   body = jsonencode({
     properties = {
       domainManagement       = "CustomerManaged"
@@ -116,9 +113,9 @@ module "spf_dkim_dkim2_verification" {
 
 
 resource "azurerm_communication_service" "example" {
-  name                = "smtpproj-communicationservice"
+  name                = var.communication_service_name
   resource_group_name = azurerm_resource_group.default.name
-  data_location       = "United States"
+  data_location       = var.communication_service_data_location
   depends_on = [ azapi_resource.custom_domain ]
 }
 
@@ -137,7 +134,7 @@ module "entra_app" {
 
 
 resource "azapi_update_resource" "linked_domain" {
-    depends_on = [ module.domain_verification, module.spf_dkim_dkim2_verification ]
+  depends_on = [ module.domain_verification, module.spf_dkim_dkim2_verification ]
   #count = 0  
   type        = "Microsoft.Communication/communicationServices@2023-04-01-preview"
   resource_id = azurerm_communication_service.example.id

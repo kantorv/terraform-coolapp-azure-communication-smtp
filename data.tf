@@ -26,10 +26,10 @@ depends_on = [ azurerm_email_communication_service.example, azapi_resource.custo
 #   depends_on = [ azurerm_communication_service.example ]
 # }
 
-data "azurerm_subscription" "primary" {
-}
+# data "azurerm_subscription" "primary" {
+# }
 
-data "azuread_client_config" "current" {}
+# data "azuread_client_config" "current" {}
 
 
 # data "azurerm_role_definition" "smtp_server_role" {

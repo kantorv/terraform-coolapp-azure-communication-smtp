@@ -106,3 +106,21 @@ variable "dns_verification_retry_timeout" {
   type = number
   default = 30
 }
+
+
+
+variable "communication_service_name" {
+  type = string
+  default = "smtpproj-communicationservice"
+}
+
+variable "email_communication_service_name" {
+  type = string
+  default = "smtpproj-emailcommunicationservice"
+}
+
+
+variable "communication_service_data_location" {
+  type = string
+  default = "United States"
+}

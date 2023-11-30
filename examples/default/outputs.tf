@@ -22,12 +22,20 @@ output "smtp_password" {
 
 # https://en.wikipedia.org/wiki/Email_address#Syntax
 output "sender_usernames" {
-   value = module.azure-communication-smtp.sender_usernames
+   value = [for s in jsondecode(data.azapi_resource_list.sender_usernames.output).value: format("%s@%s",s.properties.username,var.custom_domain) ]
+}
+
+output "verification_states" {
+   value = jsondecode(data.azapi_resource.custom_domain.output).properties.verificationStates 
 }
 
 
 
+# output "custom_domain_id" {
+#  value = module.azure-communication-smtp.custom_domain_resource_id
+# }
 
-output "custom_domain_id" {
- value = module.azure-communication-smtp.custom_domain_resource_id
-}
+
+# output "custom_domain_data" {
+#   value = jsondecode(data.azapi_resource.custom_domain.output).properties
+# }

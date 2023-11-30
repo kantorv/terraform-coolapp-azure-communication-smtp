@@ -1,6 +1,6 @@
 module "azure-communication-smtp" {
   source  = "kantorv/azure-communication-smtp/coolapp"
-  version = "0.0.61"
+  version = "0.0.62"
   # insert the 10 required variables here
 
   azure_subscription_id = var.azure_subscription_id
@@ -43,6 +43,10 @@ module "azure-communication-smtp" {
   dns_verification_max_retries = 10
   dns_verification_retry_timeout = 60
 
+  communication_service_name = "smtpproj-communicationservice"
+  email_communication_service_name = "smtpproj-emailcommunicationservice"
+  communication_service_data_location = "United States"
+
 
 }
 
@@ -67,28 +71,42 @@ resource "null_resource" "send_email" {
 
 
 
-# resource "azapi_resource" "sender_usernames" {
+resource "azapi_resource" "sender_usernames" {
 
-#   # for_each   =  toset(var.sender_usernames)
-#   for_each = tomap({
-#     # for t in var.sender_usernames : "${t.username}" => t
-#      for t in [] : "${t.username}" => t
-#   })
+  # for_each   =  toset(var.sender_usernames)
+  for_each = tomap({
+    # for t in var.sender_usernames : "${t.username}" => t
+     for t in [
+      {
+          "username" : "info",
+          "display_name": "Office Team"
+      },
+      {
+          "username" : "llama",
+          "display_name": "Email Bot"
+      },
+      {
+          "username" : "d",
+          "display_name": "DMARC REPORTS"
+      }
 
-#   type      = "Microsoft.Communication/emailServices/domains/senderUsernames@2023-04-01-preview"
-#   name      = each.value.username
-#   parent_id = azapi_resource.custom_domain.id
+    ] : "${t.username}" => t
+  })
 
-#   body = jsonencode({
-#     properties = {
-#       displayName = "${each.value.display_name}"
-#       username    = "${each.value.username}"
-#     }
-#   })
+  type      = "Microsoft.Communication/emailServices/domains/senderUsernames@2023-04-01-preview"
+  name      = each.value.username
+  parent_id = module.azure-communication-smtp.custom_domain_resource_id
 
-#   response_export_values = ["*"]
+  body = jsonencode({
+    properties = {
+      displayName = "${each.value.display_name}"
+      username    = "${each.value.username}"
+    }
+  })
 
-#   depends_on = [module.entra_app, azapi_update_resource.linked_domain]
+  response_export_values = ["*"]
+
+  depends_on = [module.azure-communication-smtp, null_resource.send_email]
 
 
-# }
+}
