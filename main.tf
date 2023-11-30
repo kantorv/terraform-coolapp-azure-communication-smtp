@@ -65,9 +65,9 @@ module "domain_verification" {
   ttl             = 3600
   record_type = "Domain"
   initiate_verification = true
+  az_cli_enabled = var.az_cli_enabled
 
   wait_for_success_verification = var.dns_wait_for_success_verification
-  az_cli_enabled = var.az_cli_enabled
   dns_verification_fail_silently = var.dns_verification_fail_silently
   dns_verification_max_retries = var.dns_verification_max_retries
   dns_verification_retry_timeout = var.dns_verification_retry_timeout
@@ -75,7 +75,7 @@ module "domain_verification" {
 
 
 module "dmarc_record" {
-  depends_on = [azapi_resource.custom_domain, module.domain_verification]
+  depends_on = [azapi_resource.custom_domain]
  #   depends_on = [cloudflare_record.verification]
   count = var.setup_dmarc_record?1:0
 
@@ -106,8 +106,9 @@ module "spf_dkim_dkim2_verification" {
   ttl             = each.value.ttl
   record_type = each.key
   initiate_verification = true
-  wait_for_success_verification = var.dns_wait_for_success_verification
   az_cli_enabled = var.az_cli_enabled
+
+  wait_for_success_verification = var.dns_wait_for_success_verification
   dns_verification_fail_silently = var.dns_verification_fail_silently
   dns_verification_max_retries = var.dns_verification_max_retries
   dns_verification_retry_timeout = var.dns_verification_retry_timeout
@@ -189,26 +190,3 @@ resource "azapi_resource" "sender_usernames" {
 
 
 
-resource "null_resource" "send_email" {
-  count = length(var.smtp_test_email_resipient) > 0 ? 1 : 0
-
-
-  triggers = {
-    always_run = filemd5("${path.module}/scripts/send_email.py")
-  }
-
-
-  provisioner "local-exec" {
-    command = <<-EOF
-        python3 ${path.module}/scripts/send_email.py \
-            -s ${var.smtp_server_host} \
-            -f ${local.sender_usernames[0]}  \
-            -r ${var.smtp_server_port} \
-            -u '${data.azurerm_communication_service.smtp_app.name}|${module.entra_app.client_id}|${module.entra_app.tenant_id}' \
-            -p '${module.entra_app.client_secret}' \
-            -t ${var.smtp_test_email_resipient}
-    EOF
-  }
-
-  depends_on = [azapi_resource.sender_usernames, module.spf_dkim_dkim2_verification]
-}
