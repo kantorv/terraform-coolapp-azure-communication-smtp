@@ -202,7 +202,7 @@ resource "null_resource" "sender_usernames" {
       azure_tenant_id="${var.azure_tenant_id}"
       azure_client_id="${var.azure_client_id}"
       azure_client_secret="${var.azure_client_secret}"
-      custom_domain_resource_id="${module.azure-communication-smtp.custom_domain_resource_id}"
+      custom_domain_resource_id="${ azapi_resource.custom_domain.id}"
 
 
       access_token_resp=$(

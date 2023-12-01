@@ -1,6 +1,6 @@
 module "azure-communication-smtp" {
   source  = "kantorv/azure-communication-smtp/coolapp"
-  version = "0.0.63"
+  version = "0.0.64"
   # insert the 10 required variables here
 
   azure_subscription_id = var.azure_subscription_id
@@ -18,15 +18,22 @@ module "azure-communication-smtp" {
   sender_usernames =  [
     {
         "username" : "info",
-        "display_name": "Office Team"
+        "displayName": "Office Team"
     },
     {
         "username" : "llama",
-        "display_name": "Email Bot"
+        "displayName": "Email Bot"
     },
     {
         "username" : "d",
-        "display_name": "DMARC REPORTS"
+        "displayName": "DMARC REPORTS"
+    },
+    {
+        "username" : "g",
+        "displayName": "g REPORTS"
+    },    {
+        "username" : "p",
+        "displayName": "p REPORTS"
     }
 
   ]
