@@ -1,6 +1,6 @@
 module "azure-communication-smtp" {
   source  = "kantorv/azure-communication-smtp/coolapp"
-  version = "0.0.62"
+  version = "0.0.63"
   # insert the 10 required variables here
 
   azure_subscription_id = var.azure_subscription_id
