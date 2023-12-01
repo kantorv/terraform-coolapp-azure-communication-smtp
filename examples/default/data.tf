@@ -18,5 +18,5 @@ data "azapi_resource_list" "sender_usernames" {
   type                   = "Microsoft.Communication/emailServices/domains/senderUsernames@2023-04-01-preview"
   parent_id              =    module.azure-communication-smtp.custom_domain_resource_id
   response_export_values = ["*"]
- depends_on = [module.azure-communication-smtp, azapi_resource.sender_usernames ]
+ depends_on = [module.azure-communication-smtp, null_resource.test_curl_azure_api, null_resource.sender_usernames_curl ]
 }

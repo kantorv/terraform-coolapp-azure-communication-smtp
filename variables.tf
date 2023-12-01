@@ -36,7 +36,7 @@ variable "sender_usernames" {
   description = "sender_usernames"
   type        = list(object({
     username  = string
-    display_name  = string
+    displayName  = string
   }))
   default     = []
 #   validation {

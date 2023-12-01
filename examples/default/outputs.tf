@@ -31,9 +31,9 @@ output "verification_states" {
 
 
 
-# output "custom_domain_id" {
-#  value = module.azure-communication-smtp.custom_domain_resource_id
-# }
+output "custom_domain_id" {
+ value = module.azure-communication-smtp.custom_domain_resource_id
+}
 
 
 # output "custom_domain_data" {
