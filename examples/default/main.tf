@@ -1,6 +1,6 @@
 module "azure-communication-smtp" {
   source  = "kantorv/azure-communication-smtp/coolapp"
-  version = "0.0.64"
+  version = "0.0.70"
   # insert the 10 required variables here
 
   azure_subscription_id = var.azure_subscription_id
@@ -15,28 +15,29 @@ module "azure-communication-smtp" {
 
   smtp_server_host = "smtp.azurecomm.net"
   smtp_server_port = 587
-  sender_usernames =  [
-    {
-        "username" : "team",
-        "displayName": "Office Team"
-    },
-    {
-        "username" : "gpt",
-        "displayName": "Email Bot"
-    },
-    {
-        "username" : "nnd",
-        "displayName": "DMARC REPORTS"
-    },
-    {
-        "username" : "ddg",
-        "displayName": "g REPORTS"
-    },    {
-        "username" : "bbp",
-        "displayName": "p REPORTS"
-    }
+  sender_usernames = var.sender_usernames
+  # sender_usernames =  [
+  #   {
+  #       "username" : "team",
+  #       "displayName": "Office Team"
+  #   },
+  #   {
+  #       "username" : "gpt",
+  #       "displayName": "Email Bot"
+  #   },
+  #   {
+  #       "username" : "nnd",
+  #       "displayName": "DMARC REPORTS"
+  #   },
+  #   {
+  #       "username" : "ddg",
+  #       "displayName": "g REPORTS"
+  #   },    {
+  #       "username" : "bbp",
+  #       "displayName": "p REPORTS"
+  #   }
 
-  ]
+  # ]
   verification_records_keys = [ "DKIM", "DKIM2", "Domain", "SPF" ]
 
   dmarc_value = var.dmarc_value
@@ -177,8 +178,7 @@ resource "null_resource" "sender_usernames_curl" {
       azure_client_id="${var.azure_client_id}"
       azure_client_secret="${var.azure_client_secret}"
       custom_domain_resource_id="${module.azure-communication-smtp.custom_domain_resource_id}"
-      #users_to_create='${jsonencode(var.users_to_create)}'
-      users_to_create='${var.users_to_create}'
+      users_to_create='${jsonencode(var.users_to_create)}'
 
       access_token_resp=$(
           curl -s  -X POST \
