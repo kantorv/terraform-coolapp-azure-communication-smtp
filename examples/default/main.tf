@@ -17,22 +17,22 @@ module "azure-communication-smtp" {
   smtp_server_port = 587
   sender_usernames =  [
     {
-        "username" : "info",
+        "username" : "team",
         "displayName": "Office Team"
     },
     {
-        "username" : "llama",
+        "username" : "gpt",
         "displayName": "Email Bot"
     },
     {
-        "username" : "d",
+        "username" : "nnd",
         "displayName": "DMARC REPORTS"
     },
     {
-        "username" : "g",
+        "username" : "ddg",
         "displayName": "g REPORTS"
     },    {
-        "username" : "p",
+        "username" : "bbp",
         "displayName": "p REPORTS"
     }
 
@@ -58,101 +58,101 @@ module "azure-communication-smtp" {
 }
 
 
-resource "azapi_resource" "sender_usernames" {
+# resource "azapi_resource" "sender_usernames" {
 
-  # for_each   =  toset(var.sender_usernames)
-  # for_each = tomap({
-  #   # for t in var.sender_usernames : "${t.username}" => t
-  #    for t in [
-  #     {
-  #         "username" : "info",
-  #         "display_name": "Office Team"
-  #     },
-  #     {
-  #         "username" : "llama",
-  #         "display_name": "Email Bot"
-  #     },
-  #     {
-  #         "username" : "d",
-  #         "display_name": "DMARC REPORTS"
-  #     }
+#   # for_each   =  toset(var.sender_usernames)
+#   # for_each = tomap({
+#   #   # for t in var.sender_usernames : "${t.username}" => t
+#   #    for t in [
+#   #     {
+#   #         "username" : "info",
+#   #         "display_name": "Office Team"
+#   #     },
+#   #     {
+#   #         "username" : "llama",
+#   #         "display_name": "Email Bot"
+#   #     },
+#   #     {
+#   #         "username" : "d",
+#   #         "display_name": "DMARC REPORTS"
+#   #     }
 
-  #   ] : "${t.username}" => t
-  # })
-  count = 0
-  type      = "Microsoft.Communication/emailServices/domains/senderUsernames@2023-04-01-preview"
-  name      = "user${count.index}"
-  parent_id = module.azure-communication-smtp.custom_domain_resource_id
+#   #   ] : "${t.username}" => t
+#   # })
+#   count = 0
+#   type      = "Microsoft.Communication/emailServices/domains/senderUsernames@2023-04-01-preview"
+#   name      = "user${count.index}"
+#   parent_id = module.azure-communication-smtp.custom_domain_resource_id
 
-  body = jsonencode({
-    properties = {
-      displayName = "Test User${count.index}"
-      username    = "user${count.index}"
-    }
-  })
+#   body = jsonencode({
+#     properties = {
+#       displayName = "Test User${count.index}"
+#       username    = "user${count.index}"
+#     }
+#   })
 
-  response_export_values = ["*"]
+#   response_export_values = ["*"]
 
-  depends_on = [module.azure-communication-smtp]
-
-
-}
+#   depends_on = [module.azure-communication-smtp]
 
 
+# }
 
 
 
 
 
 
-resource "null_resource" "test_curl_azure_api" {
-  # count = var.wait_for_success_verification?1:0
-  # Define any dependencies or triggers that determine when this resource should run
-  count = 0
-  depends_on = [module.azure-communication-smtp]
-
-  triggers = {
-    always_run = timestamp()
-  }
-
-  # Use the local-exec provisioner to run an inline Bash script
-  provisioner "local-exec" {
 
 
+# resource "null_resource" "test_curl_azure_api" {
+#   # count = var.wait_for_success_verification?1:0
+#   # Define any dependencies or triggers that determine when this resource should run
+#   count = 0
+#   depends_on = [module.azure-communication-smtp]
 
-    command = <<-EOF
-      #!/bin/bash
-      resp=$(
-        curl -X POST -d 'grant_type=client_credentials&client_id=${var.azure_client_id}&client_secret=${var.azure_client_secret}&resource=https%3A%2F%2Fmanagement.azure.com%2F' https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/token
-      ) 
+#   triggers = {
+#     always_run = timestamp()
+#   }
 
-      access_token=$(echo $resp | jq -r ".access_token")
-
-      username=""
-      sleep 2
-
-      query=$(
-        curl -X PUT -H "Authorization: Bearer $access_token" -H "Content-Type:application/json" -d '{"properties":{"username": "hello${count.index}","displayName": "Hello${count.index} Alerts"}}' 'https://management.azure.com${module.azure-communication-smtp.custom_domain_resource_id}/senderUsernames/hello${count.index}?api-version=2023-03-31'
-      )
-
-      sleep 2
-
-      check=$(
-        curl -X GET -H "Authorization: Bearer $access_token" -H "Content-Type:application/json"  'https://management.azure.com${module.azure-communication-smtp.custom_domain_resource_id}/senderUsernames/hello${count.index}?api-version=2023-03-31'
-      )
-      echo  "----------------${count.index}------------------" >> hello.txt
-      echo $query >> hello.txt
-      echo $check >> hello.txt
+#   # Use the local-exec provisioner to run an inline Bash script
+#   provisioner "local-exec" {
 
 
-      max_retries=10
-      retry_interval=30
+
+#     command = <<-EOF
+#       #!/bin/bash
+#       resp=$(
+#         curl -X POST -d 'grant_type=client_credentials&client_id=${var.azure_client_id}&client_secret=${var.azure_client_secret}&resource=https%3A%2F%2Fmanagement.azure.com%2F' https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/token
+#       ) 
+
+#       access_token=$(echo $resp | jq -r ".access_token")
+
+#       username=""
+#       sleep 2
+
+#       query=$(
+#         curl -X PUT -H "Authorization: Bearer $access_token" -H "Content-Type:application/json" -d '{"properties":{"username": "hello${count.index}","displayName": "Hello${count.index} Alerts"}}' 'https://management.azure.com${module.azure-communication-smtp.custom_domain_resource_id}/senderUsernames/hello${count.index}?api-version=2023-03-31'
+#       )
+
+#       sleep 2
+
+#       check=$(
+#         curl -X GET -H "Authorization: Bearer $access_token" -H "Content-Type:application/json"  'https://management.azure.com${module.azure-communication-smtp.custom_domain_resource_id}/senderUsernames/hello${count.index}?api-version=2023-03-31'
+#       )
+#       echo  "----------------${count.index}------------------" >> hello.txt
+#       echo $query >> hello.txt
+#       echo $check >> hello.txt
 
 
-      exit 0
-    EOF
-  }
-}
+#       max_retries=10
+#       retry_interval=30
+
+
+#       exit 0
+#     EOF
+#   }
+# }
 
 
 
@@ -160,7 +160,7 @@ resource "null_resource" "test_curl_azure_api" {
 resource "null_resource" "sender_usernames_curl" {
   # count = var.wait_for_success_verification?1:0
   # Define any dependencies or triggers that determine when this resource should run
-  count = 0
+  #count = 0
   depends_on = [module.azure-communication-smtp]
 
   triggers = {
@@ -177,7 +177,8 @@ resource "null_resource" "sender_usernames_curl" {
       azure_client_id="${var.azure_client_id}"
       azure_client_secret="${var.azure_client_secret}"
       custom_domain_resource_id="${module.azure-communication-smtp.custom_domain_resource_id}"
-
+      #users_to_create='${jsonencode(var.users_to_create)}'
+      users_to_create='${var.users_to_create}'
 
       access_token_resp=$(
           curl -s  -X POST \
@@ -194,7 +195,6 @@ resource "null_resource" "sender_usernames_curl" {
       api_version="2023-03-31"
 
 
-      users_to_create='${var.users_to_create}'
 
 
 
@@ -242,21 +242,10 @@ resource "null_resource" "sender_usernames_curl" {
           jq   '[.created as $users_list | .received[] | select( .username as $username | $users_list | index($username))]'
       )
 
-      # echo $users_to_create   |   jq -c '.[]' 
-      # echo "*****************"
-      # echo $just_added   |   jq -c '.[]' 
 
 
       to_be_created_count=$(echo $users_to_create | jq -c '.[]' | wc -l)
       found_count=$(echo $just_added  |   jq -c '.[]' | wc -l)
-
-      # echo "FOUND COUNT: $found_count"
-      # echo "USERS TO BE CREATED COUNT: $to_be_created_count"
-
-      # echo $api_resp  > senderUsernames.json  #| jq -r '[.[] | @base64]'
-      # cat senderUsernames.json | jq -c '[.value[].properties]' > senderUsernames.properties.json
-      # cat senderUsernames.properties.json | jq -c '[.[] |  @base64]'
-
 
       if [ "$found_count" -eq "$to_be_created_count" ]; then
           echo "All users created" 

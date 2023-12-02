@@ -192,6 +192,9 @@ resource "azapi_update_resource" "linked_domain" {
 resource "null_resource" "sender_usernames" {
   depends_on = [module.entra_app, azapi_update_resource.linked_domain]
 
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 
   # Use the local-exec provisioner to run an inline Bash script
   provisioner "local-exec" {
@@ -203,6 +206,9 @@ resource "null_resource" "sender_usernames" {
       azure_client_id="${var.azure_client_id}"
       azure_client_secret="${var.azure_client_secret}"
       custom_domain_resource_id="${ azapi_resource.custom_domain.id}"
+      users_to_create='${jsonencode(var.sender_usernames)}'
+
+
 
 
       access_token_resp=$(
@@ -219,8 +225,7 @@ resource "null_resource" "sender_usernames" {
       sender_usernames_endpoint="https://management.azure.com$custom_domain_resource_id/senderUsernames"
       api_version="2023-03-31"
 
-
-      users_to_create='${var.sender_usernames}'
+      
 
 
 
@@ -239,11 +244,6 @@ resource "null_resource" "sender_usernames" {
               -d "{\"properties\":{\"username\": \"$username\",\"displayName\": \"$displayName\"}}" \
               $url
           )
-          # exit_code=$?
-          # echo $username
-          # echo $api_resp
-          # echo $exit_code
-          # echo 
           
       done
 
@@ -266,11 +266,6 @@ resource "null_resource" "sender_usernames" {
           jq --argjson new_users "$users_to_create"  '{"created":[$new_users[].username],"received": . }' | \
           jq   '[.created as $users_list | .received[] | select( .username as $username | $users_list | index($username))]'
       )
-
-      # echo $users_to_create   |   jq -c '.[]' 
-      # echo "*****************"
-      # echo $just_added   |   jq -c '.[]' 
-
 
       to_be_created_count=$(echo $users_to_create | jq -c '.[]' | wc -l)
       found_count=$(echo $just_added  |   jq -c '.[]' | wc -l)
